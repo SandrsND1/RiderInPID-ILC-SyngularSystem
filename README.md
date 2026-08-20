@@ -167,54 +167,6 @@ nearest track index
 
 The recorded data can be used to evaluate controller performance and compare tracking behavior across laps.
 
-Project Structure
-RiderInPID-ILC-SyngularSystem/
-|
-├── Assets/
-│   |
-│   ├── Action Map/
-│   │   ├── CarControlActions.cs
-│   │   └── CarControlActions.inputactions
-│   |
-│   ├── Material/
-│   │   └── Car_Mat.mat
-│   |
-│   ├── Scenes/
-│   │   └── SampleScene.unity
-│   |
-│   ├── Scripts/
-│   │   |
-│   │   ├── Control/
-│   │   │   ├── SingularPID_ILC.cs
-│   │   │   └── SingularVehicleModel.cs
-│   │   |
-│   │   ├── Simulation/
-│   │   │   ├── DataRecorder.cs
-│   │   │   └── RaceManager.cs
-│   │   |
-│   │   ├── Track/
-│   │   │   ├── TrackFollower.cs
-│   │   │   ├── TrackPath.cs
-│   │   │   └── TrackSetup.cs
-│   │   |
-│   │   ├── Visualization/
-│   │   │   ├── CarVisual.cs
-│   │   │   └── TrackRenderer.cs
-│   │   |
-│   │   ├── CameraFollow.cs
-│   │   └── VehicleModelHolder.cs
-│   |
-│   └── Settings/
-|
-├── Packages/
-├── ProjectSettings/
-├── .gitignore
-└── README.md
-Main Components
-SingularPID_ILC
-
-Main vehicle controller.
-
 Responsibilities:
 
 PID control
