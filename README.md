@@ -2,7 +2,7 @@
 
 Unity-based vehicle simulation implementing PID control and Iterative Learning Control (ILC) for autonomous track following.
 
-The project combines a kinematic bicycle vehicle model, PID feedback control, cross-track error correction and iterative learning between laps.
+The project combines a kinematic bicycle vehicle model, PID feedback control, Cross-Track Error (CTE) correction, and iterative learning between laps.
 
 ## Features
 
@@ -18,10 +18,47 @@ The project combines a kinematic bicycle vehicle model, PID feedback control, cr
 - Lap time measurement
 - Runtime controller debugging
 - Simulation data recording
+
+## Architecture
+
+```text
+TrackPath
+    │
+    ▼
+TrackFollower
+    │
+    ├── Cross-Track Error
+    ├── Lookahead Point
+    └── Target Heading
+            │
+            ▼
+      SingularPID_ILC
+            │
+            ├── P Term
+            ├── I Term
+            ├── D Term
+            └── ILC Correction
+                    │
+                    ▼
+          SingularVehicleModel
+                    │
+                    ▼
+              Vehicle State
+                    │
+                    └──────► TrackFollower
+```
 PID Controller
 
-The controller calculates the steering command using proportional, integral and derivative terms.
+The controller calculates the steering command using proportional, integral, and derivative terms.
 
+u_PID = Kp * e + Ki * ∫e dt + Kd * de/dt
+
+Where:
+
+e — heading error
+Kp — proportional gain
+Ki — integral gain
+Kd — derivative gain
 Proportional Term
 P = Kp * headingError
 
@@ -48,7 +85,7 @@ Iterative Learning Control
 
 ILC improves the steering command using information collected from previous laps.
 
-During the first lap, the controller records the cross-track error.
+During the first lap, the controller records the Cross-Track Error.
 
 On subsequent laps, the stored error is used to update the steering correction:
 
@@ -67,16 +104,13 @@ Vehicle Model
 
 The vehicle uses a simplified kinematic bicycle model.
 
-State variables:
-
-x      - X position
-y      - Y position
-theta  - vehicle heading
-delta  - steering angle
-v      - vehicle velocity
-
-Vehicle dynamics:
-
+State Variables
+x     - X position
+y     - Y position
+theta - vehicle heading
+delta - steering angle
+v     - vehicle velocity
+Vehicle Dynamics
 dx     = v * cos(theta)
 dy     = v * sin(theta)
 dtheta = (v / L) * tan(delta)
@@ -85,8 +119,13 @@ Default wheelbase:
 
 L = 2.5 m
 
-The vehicle model also limits steering angle and velocity and normalizes the heading angle to [-π, π].
+The vehicle model also:
 
+limits steering angle
+limits velocity
+stabilizes steering dynamics
+integrates vehicle position
+normalizes heading to [-π, π]
 Track Following
 
 TrackFollower calculates the vehicle's position relative to the track.
@@ -95,7 +134,7 @@ It provides:
 
 nearest track point
 lookahead point
-cross-track error
+Cross-Track Error
 target heading
 Cross-Track Error
 
@@ -105,8 +144,8 @@ The distance from the vehicle to the projected point represents the tracking err
 
 The sign of the error is determined using the track normal.
 
-CTE > 0  -> vehicle is on one side of the track
-CTE < 0  -> vehicle is on the opposite side
+CTE > 0 → vehicle is on one side of the track
+CTE < 0 → vehicle is on the opposite side
 Lookahead
 
 The controller uses a point ahead of the vehicle to determine the desired direction of travel.
@@ -144,7 +183,7 @@ current lap
 best lap
 average lap time
 
-After the final lap, the vehicle is stopped and the race statistics are printed to the Unity console.
+After the final lap, the vehicle is stopped and race statistics are printed to the Unity console.
 
 Data Recording
 
@@ -160,21 +199,59 @@ PID I term
 PID D term
 integral error
 heading error
-cross-track error
+Cross-Track Error
 ILC correction
 ILC index
 nearest track index
 
 The recorded data can be used to evaluate controller performance and compare tracking behavior across laps.
 
-Responsibilities:
+Project Structure
+```text
+Assets/
+├── Action Map/
+│   ├── CarControlActions.cs
+│   └── CarControlActions.inputactions
+│
+├── Scenes/
+│   └── SampleScene.unity
+│
+├── Scripts/
+│   ├── Control/
+│   │   ├── SingularPID_ILC.cs
+│   │   └── SingularVehicleModel.cs
+│   │
+│   ├── Simulation/
+│   │   ├── DataRecorder.cs
+│   │   └── RaceManager.cs
+│   │
+│   ├── Track/
+│   │   ├── TrackFollower.cs
+│   │   ├── TrackPath.cs
+│   │   └── TrackSetup.cs
+│   │
+│   ├── Visualization/
+│   │   ├── CarVisual.cs
+│   │   └── TrackRenderer.cs
+│   │
+│   ├── CameraFollow.cs
+│   └── VehicleModelHolder.cs
+│
+├── Material/
+├── Settings/
+└── ...
+```
+Main Components
+SingularPID_ILC
+
+Main control system responsible for:
 
 PID control
 ILC learning
 steering control
 speed control
-lap tracking
 controller state management
+lap tracking
 SingularVehicleModel
 
 Mathematical vehicle model responsible for:
@@ -190,7 +267,7 @@ Track tracking subsystem responsible for:
 nearest point detection
 CTE calculation
 lookahead calculation
-target heading
+target heading calculation
 TrackPath
 
 Stores the track geometry and provides:
@@ -200,72 +277,11 @@ track direction
 track visualization
 RaceManager
 
-Controls the race and multi-lap simulation.
+Controls:
+multi-lap simulation
+lap timing
+race completion
+race statistics
 
 DataRecorder
-
 Collects controller and vehicle data for further analysis.
-
-Main Parameters
-Parameter	Default	Description
-kp	3.5	Proportional gain
-ki	0.08	Integral gain
-kd	0.9	Derivative gain
-maxIntegral	0.4	Integral anti-windup limit
-derivativeFilterK	0.7	Derivative filtering
-learningRate	0.02	ILC learning rate
-maxILC	0.16	Maximum ILC correction
-maxSteering	0.75	Maximum steering angle
-steeringRate	6.0	Maximum steering change
-targetSpeed	4.0	Target speed
-lookaheadDistance	6.0	Lookahead distance
-acceleration	3.0	Acceleration
-Requirements
-Unity
-C#
-Unity Input System
-Unity URP
-
-The exact Unity version can be found in:
-
-ProjectSettings/ProjectVersion.txt
-Running the Project
-Clone the repository.
-Open the project using Unity Hub.
-Open:
-Assets/Scenes/SampleScene.unity
-Press Play.
-
-The vehicle should follow the predefined track using the PID-ILC controller.
-
-Debugging
-
-The controller provides runtime information including:
-
-Current Lap
-ILC Index
-ILC Points
-Distance
-Velocity
-Cross-Track Error
-Steering
-Maximum ILC Correction
-
-Track visualization can also display the lookahead point and direction.
-
-Purpose
-
-The project was developed as a vehicle control simulation for studying trajectory tracking and iterative learning control.
-
-The main idea is to combine classical PID feedback with ILC-based correction learned from repeated traversal of the same trajectory.
-
-Future Improvements
-Adaptive lookahead based on vehicle speed
-Curvature-based speed control
-Improved lap detection
-Advanced ILC learning laws
-ILC filtering and regularization
-Automatic controller parameter optimization
-PID vs PID-ILC performance comparison
-Trajectory error visualization
-Python/MATLAB analysis pipeline
