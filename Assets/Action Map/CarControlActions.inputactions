@@ -1,0 +1,55 @@
+{
+    "version": 1,
+    "name": "CarControlActions",
+    "maps": [
+        {
+            "name": "Car",
+            "id": "2138bdb4-8911-431c-9d8d-e28356c8092c",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "bdb7dc92-189f-4011-a75e-f4e811363192",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "New action1",
+                    "type": "Button",
+                    "id": "11c6236f-9d05-4367-a29e-33659a3091b9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "a7c34e71-5ffb-489f-a6bb-29b3b754d3af",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0c746051-e54f-4010-a756-a65d8b783ce9",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
